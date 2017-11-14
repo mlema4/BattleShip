@@ -11,10 +11,10 @@ import javax.swing.border.EmptyBorder;
 public class Cell{
 
   private JButton button;
-  private int xCoordinate;
+  private char xCoordinate;
   private char yCoordinate;
 
-  public Cell(int xValue, char yValue){
+  public Cell(char xValue, char yValue){
     button = new JButton();
     button.setBorder(BorderFactory.createEmptyBorder());
     button.setPreferredSize(new Dimension(50, 50));
@@ -36,11 +36,11 @@ public class Cell{
     button.setText(newText);
   }
 
-  public int getxCoordinates (){
+  public char getxCoordinates (){
     return xCoordinate;
   }
 
-  public int getyCoordinates (){
+  public char getyCoordinates (){
     return yCoordinate;
   }
 

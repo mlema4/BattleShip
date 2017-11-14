@@ -1,30 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
-import java.io.File;
-import java.util.ArrayList;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.*;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.util.*;
+import java.awt.event.*;
+import javax.swing.event.*;
 
 public class Frame{
   public JPanel game;
   public BattleShipGrid playerGrid;
-
+  private JMenuBar menubar;
+  private JMenu Start, Help, Exit;
+  private JMenuItem connect, about, help, statistics;
+  private JPanel statusBar;
 
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
@@ -32,37 +19,86 @@ public class Frame{
 
 
   public Frame(){
-    game = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    if(shouldFill){
-      gbc.fill = GridBagConstraints.HORIZONTAL;
-    }
-    game.setBackground(Color.gray);
 
 
-    game.setBorder(new EmptyBorder(2,3,2,3));
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    JButton start = new JButton("START");
-    start.addActionListener(new ActionListener(){
+    game = new JPanel(new BorderLayout());
+    // GridBagConstraints gbc = new GridBagConstraints();
+    // if(shouldFill){
+    //   gbc.fill = GridBagConstraints.HORIZONTAL;
+    // }
+    //game.setBackground(Color.gray);
+
+    //Add componenets to menubar
+    menubar = new JMenuBar();
+    Start = new JMenu("Start");
+    connect = new JMenuItem("Connect");
+    connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-          game.removeAll();
-          game.revalidate();
-          game.repaint();
-          playerGrid.addToPanel(game, gbc);
+        //
+      }
+    });
+    Start.add(connect);
 
+    Help = new JMenu("Help");
+    help = new JMenuItem("Help");
+    help.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent actionEvent){
 
       }
     });
-    game.add(start, gbc);
+    about = new JMenuItem("About");
+    about.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent actionEvent){
+        JOptionPane.showMessageDialog(null, "Author: Abdulaziz Malik - amalik11\n Manuel Lema - mlema4");
+      }
+    });
+    statistics = new JMenuItem("Statistics");
+    statistics.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent actionEvent){
+        //
+      }
+    });
+
+    Help.add(help);
+    Help.add(about);
+    Help.add(statistics);
+
+    Exit = new JMenu("Exit");
+    Exit.addMenuListener(new MenuListener(){
+      @Override
+      public void menuSelected(MenuEvent e){
+        System.exit(0);
+      }
+      @Override
+      public void menuDeselected(MenuEvent e) {
+      }
+
+      @Override
+      public void menuCanceled(MenuEvent e) {
+      }
+    });
+
+    menubar.add(Start);
+    menubar.add(Help);
+    menubar.add(Exit);
+
+    game.setBorder(new EmptyBorder(2,3,2,3));
+
+
+    game.add(menubar, BorderLayout.NORTH);
 
     playerGrid = new BattleShipGrid();
 
-    gbc.gridx =1;
-    gbc.gridy =1;
+    game.add(playerGrid.getGrid(), BorderLayout.CENTER);
+    //playerGrid.addToPanel(game, BorderLayout.CENTER);
 
-    playerGrid.addToPanel(game, gbc);
+  }
+
+  public void setShips(){
 
   }
 

@@ -72,7 +72,7 @@ public class BattleShipGrid{
 
     for(int i=0; i<10; i++ ){
       for(int j=0; j<10;j++){
-        Cell tmp = new Cell(i,getLetter(j));
+        Cell tmp = new Cell((char)i ,getLetter(j));
         tmp.addToGrid(battleGrid);
         gridRepresentation[i][j] = 0;
       }
@@ -85,6 +85,10 @@ public class BattleShipGrid{
 
   }
 
+
+  public void setShips(){
+
+  }
 
   public char getLetter(int val){
     switch (val){
@@ -104,8 +108,12 @@ public class BattleShipGrid{
     return '0';
   }
 
-    public void addToPanel(JPanel panel, GridBagConstraints gbc){
-  panel.add(grid, gbc);
-}
+  public void addToPanel(JPanel panel, GridBagConstraints gbc){
+      panel.add(grid, gbc);
+  }
+
+  public JPanel getGrid(){
+    return grid;
+  }
 
 }
