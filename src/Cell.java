@@ -13,6 +13,7 @@ public class Cell{
   private JButton button;
   private char xCoordinate;
   private char yCoordinate;
+  private int x,y;
 
   public Cell(char xValue, char yValue){
     button = new JButton();
@@ -30,6 +31,11 @@ public class Cell{
       System.out.println(ex);
     }
 
+  }
+
+  public void setXY(int x, int y){
+    this.x = x;
+    this.y = y;
   }
 
   public void setText(String newText){
