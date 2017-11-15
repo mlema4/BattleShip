@@ -11,31 +11,28 @@ public class Frame{
   private JMenuBar menubar;
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics;
-  private JPanel statusBar;
+  private JLabel statusBar;
 
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
   final static boolean RIGHT_TO_LEFT = false;
+  public boolean connection = false;
 
 
   public Frame(){
 
 
     game = new JPanel(new BorderLayout());
-    // GridBagConstraints gbc = new GridBagConstraints();
-    // if(shouldFill){
-    //   gbc.fill = GridBagConstraints.HORIZONTAL;
-    // }
-    //game.setBackground(Color.gray);
 
-    //Add componenets to menubar
+    statusBar = new JLabel();
+
     menubar = new JMenuBar();
     Start = new JMenu("Start");
     connect = new JMenuItem("Connect");
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        //
+        statusBar.setText("Connecting..."); 
       }
     });
     Start.add(connect);
@@ -95,6 +92,9 @@ public class Frame{
 
     game.add(playerGrid.getGrid(), BorderLayout.CENTER);
     //playerGrid.addToPanel(game, BorderLayout.CENTER);
+
+
+    game.add(statusBar, BorderLayout.SOUTH);
 
   }
 

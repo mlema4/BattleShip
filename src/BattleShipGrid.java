@@ -73,6 +73,8 @@ public class BattleShipGrid{
     for(int i=0; i<10; i++ ){
       for(int j=0; j<10;j++){
         Cell tmp = new Cell((char)i ,getLetter(j));
+        tmp.setXY(i,j);
+
         tmp.addToGrid(battleGrid);
         gridRepresentation[i][j] = 0;
       }
