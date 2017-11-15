@@ -10,7 +10,7 @@ public class Frame{
   public BattleShipGrid playerGrid;
   private JMenuBar menubar;
   private JMenu Start, Help, Exit;
-  private JMenuItem connect, about, help, statistics;
+  private JMenuItem connect, about, help, statistics, host;
   private JLabel statusBar;
 
   final static boolean shouldFill = true;
@@ -32,9 +32,18 @@ public class Frame{
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        statusBar.setText("Connecting..."); 
+        statusBar.setText("Connecting...");
       }
     });
+
+    host = new JMenuItem("Host");
+    host.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent actionEvent){
+        statusBar.setText("Connecting...");
+      }
+    });
+    Start.add(host);
     Start.add(connect);
 
     Help = new JMenu("Help");
