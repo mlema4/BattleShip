@@ -12,6 +12,8 @@ public class Frame{
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics, host;
   private JLabel statusBar;
+  //pricate Cells[][] tmpcells;
+  private boolean listenersSet = false;
 
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
@@ -32,7 +34,8 @@ public class Frame{
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        statusBar.setText("Connecting...");
+        statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+        setShips(5, "Aircraft Carrier");
       }
     });
 
@@ -104,11 +107,19 @@ public class Frame{
 
 
     game.add(statusBar, BorderLayout.SOUTH);
+  //  tmpcells = playerGrid.getCells();
 
   }
 
-  public void setShips(){
+  public void setShips(int size, String ship){
+    if(!listenersSet){
+      playerGrid.setlisteners(statusBar);
+    }
+      int selectedPosLeft = playerGrid.setShip(size, ship);
+//      selectedPosLeft = playerGrid.setShip(size);
+  //  }
 
+    
   }
 
   public void createFrame(){
