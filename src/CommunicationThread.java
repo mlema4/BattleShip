@@ -1,16 +1,18 @@
-import java.net.*; 
-import java.io.*; 
+import java.net.*;
+import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 
 class CommunicationThread extends Thread
-{ 
+{
  //private boolean serverContinue = true;
  public static PrintWriter out;
  private Socket clientSocket;
  private Server server;
+
+ public static String inputLine;
 
 
 
@@ -26,36 +28,38 @@ class CommunicationThread extends Thread
    {
     System.out.println ("New Communication Thread Started");
 
-    try { 
-         out = new PrintWriter(clientSocket.getOutputStream(), 
-                                      true); 
-         BufferedReader in = new BufferedReader( 
-                 new InputStreamReader( clientSocket.getInputStream())); 
+    try {
+         out = new PrintWriter(clientSocket.getOutputStream(),
+                                      true);
+         BufferedReader in = new BufferedReader(
+                 new InputStreamReader( clientSocket.getInputStream()));
 
-         String inputLine; 
+         String inputLine;
 
          while (true)
              {
-              inputLine = in.readLine();  
-              System.out.println ("Server: " + inputLine); 
+              if((inputLine = in.readLine()) != null){
+                  Frame.lock = false;
+              }
+              System.out.println ("from Cilent: " + inputLine);
               //gui.history.insert (inputLine+"\n", 0);
-              //out.println("inputLine"); 
+              //out.println("inputLine");
 
-              if (inputLine.equals("Bye.")) 
-                  break; 
+              if (inputLine.equals("exit")){
+                  server.serverContinue = false;
+                  break;
+              }
 
-              if (inputLine.equals("End Server.")) 
-                server.serverContinue = false; 
-             } 
+             }
 
-         out.close(); 
-         in.close(); 
-         clientSocket.close(); 
-        } 
-    catch (IOException e) 
-        { 
+         out.close();
+         in.close();
+         clientSocket.close();
+        }
+    catch (IOException e)
+        {
          System.err.println("Problem with Communication Server");
-         //System.exit(1); 
-        } 
+         //System.exit(1);
+        }
     }
 } 

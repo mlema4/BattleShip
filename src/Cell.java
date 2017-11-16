@@ -15,6 +15,7 @@ public class Cell{
   private char xCoordinate;
   private char yCoordinate;
   private int x,y;
+  private String imagePath;
 
 
   public Cell(char xValue, char yValue){
@@ -28,6 +29,7 @@ public class Cell{
       Image img = ImageIO.read(getClass().getResource("./images/batt100.gif"));
       Image newimg = img.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
       button.setIcon(new ImageIcon(newimg));
+      this.imagePath = "./images/batt100.gif";
     }
     catch (Exception ex) {
       System.out.println(ex);
@@ -60,8 +62,8 @@ public class Cell{
     return yCoordinate;
   }
 
-  public void getImagePath(String image){
-
+  public String getImagePath(){
+    return imagePath;
   }
   public JButton getButton(){
     return button;
@@ -77,6 +79,7 @@ public class Cell{
       Image img = ImageIO.read(getClass().getResource(imagePath));
       Image newimg = img.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
       button.setIcon(new ImageIcon(newimg));
+      imagePath = newImage;
     }
     catch (Exception ex) {
       System.out.println(ex);
