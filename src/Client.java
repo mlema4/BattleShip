@@ -1,5 +1,5 @@
-import java.net.*; 
-import java.io.*; 
+import java.net.*;
+import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -7,10 +7,11 @@ import javax.swing.*;
 public class Client extends Thread{
 
   // Network Items
-  boolean connected;
+  public static boolean connected;
   Socket echoSocket;
   public static PrintWriter out;
   public static BufferedReader in;
+  public static String temp;
 
     // set up GUI
     public Client(){
@@ -28,7 +29,7 @@ public class Client extends Thread{
         out.flush();
         //history.insert ("From Server: " + in.readLine() + "\n" , 0);
       }
-      catch (Exception e) 
+      catch (Exception e)
       {
         JOptionPane.showMessageDialog(null, "couldn't send cordinates");
       }
@@ -61,8 +62,15 @@ public class Client extends Thread{
 
         while ( true ) {
           try{
-            String temp = in.readLine();
-            System.out.println(temp);
+
+            if((temp = in.readLine())!=null){
+              Frame.lock = false;
+            }
+
+            if(temp.equals("exit")){
+              break;
+            }
+            System.out.println("from server: " + temp);
           }
           catch(Exception e){
 
@@ -73,7 +81,7 @@ public class Client extends Thread{
       }
       else
       {
-        try 
+        try
         {
           out.close();
           in.close();
@@ -82,19 +90,13 @@ public class Client extends Thread{
           //connected = false;
           //connectButton.setText("Connect to Server");
         }
-        catch (IOException e) 
-        {   
+        catch (IOException e)
+        {
             JOptionPane.showMessageDialog(null, "couldn't close socket");
             //history.insert ("Error in closing down Socket ", 0);
             //return 1;
         }
       }
       //return 0;
-    }  
+    }
  } // end class EchoServer3
-
-
-
-
- 
-

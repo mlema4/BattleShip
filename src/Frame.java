@@ -26,6 +26,7 @@ public class Frame{
 
   public static String coordinates;
   public static int type;
+  private WindowListener threadExiter;
 
 
   public Frame(){
@@ -50,12 +51,12 @@ public class Frame{
           opponentPlayerGrid.setOpponentBoardlisteners();
           game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
           f.setSize(1200,700);
-          Frame.lock = false;
+          Frame.lock = true;
 
         //}
         //else{
           //JOptionPane.showMessageDialog(null, "couldn't connect to host");
-        //} 
+        //}
 
       }
     });
@@ -140,6 +141,24 @@ public class Frame{
     game.add(statusBar, BorderLayout.SOUTH);
   //  tmpcells = playerGrid.getCells();
 
+
+  //exitlistener
+  threadExiter = new WindowAdapter() {
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+          if(type == 0){
+            Client.connected = true;
+            Client.temp = "exit";
+          }
+          else{
+            CommunicationThread.inputLine = "exit";
+          }
+          System.exit(0);
+        }
+    };
+
+
   }
 
   public void setShips(int size, String ship){
@@ -163,6 +182,8 @@ public class Frame{
     f.pack();
     f.setSize(700, 700);
     f.add(game);
+    f.addWindowListener(threadExiter);
+
 
     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
