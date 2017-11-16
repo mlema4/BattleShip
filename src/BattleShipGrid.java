@@ -1,5 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
+
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -100,7 +103,6 @@ public class BattleShipGrid{
           @Override
           public void actionPerformed(ActionEvent actionEvent){
 
-
             Coordinate tmp = new Coordinate(ifinal, jfinal);
             if(checkValid(tmp))
               return;
@@ -108,17 +110,45 @@ public class BattleShipGrid{
               shipcordY.add(jfinal);
             positionsNeeded--;
             statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-          if(positionsNeeded == 0){
-            if(check() == false)
-                statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-
-            else{
-              changeship();
-              statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-              System.out.println("LINE 117");
+            if(positionsNeeded == 0){
+              if(check() == false)
+                  statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+              else{
+                changeship();
+                statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+                System.out.println("LINE 117");
+              }
             }
           }
+        });
+      }
+    }
+  }
 
+  public void setOpponentBoardlisteners(){
+    for(int i=0; i<10; i++ ){
+      for(int j=0; j<10;j++){
+        int ifinal = i;
+        int jfinal = j;
+        Cell tmp = cells[i][j];
+        JButton buttontmp = tmp.getButton();
+        buttontmp.addActionListener(new ActionListener(){
+          @Override
+          public void actionPerformed(ActionEvent actionEvent){
+            if(!Frame.lock){
+              //System.out.println(ifinal + " " + jfinal);
+              Frame.coordinates = (Integer.toString(ifinal) + " " + Integer.toString(jfinal));
+              if(Frame.type == 0){
+                Client.out.println(Frame.coordinates);
+                Client.out.flush();
+                
+              }
+              else{
+                CommunicationThread.out.println(Frame.coordinates);
+                CommunicationThread.out.flush();
+              }
+              //Frame.lock = true;
+            }
           }
         });
       }
