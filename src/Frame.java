@@ -6,8 +6,11 @@ import java.awt.event.*;
 import javax.swing.event.*;
 
 public class Frame{
+  private JFrame f;
   public JPanel game;
+  public JPanel opponentPannel;
   public BattleShipGrid playerGrid;
+  public BattleShipGrid opponentPlayerGrid;
   private JMenuBar menubar;
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics, host;
@@ -19,6 +22,10 @@ public class Frame{
   final static boolean shouldWeightX = true;
   final static boolean RIGHT_TO_LEFT = false;
   public boolean connection = false;
+  public static boolean lock;
+
+  public static String coordinates;
+  public static int type;
 
 
   public Frame(){
@@ -34,8 +41,22 @@ public class Frame{
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
-        setShips(5, "Aircraft Carrier");
+        Client newConnection = new Client();
+        //if(newConnection.doManageConnection() == 0){
+          type = 0;
+          statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+          setShips(5, "Aircraft Carrier");
+          opponentPlayerGrid = new BattleShipGrid();
+          opponentPlayerGrid.setOpponentBoardlisteners();
+          game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
+          f.setSize(1200,700);
+          Frame.lock = false;
+
+        //}
+        //else{
+          //JOptionPane.showMessageDialog(null, "couldn't connect to host");
+        //} 
+
       }
     });
 
@@ -43,7 +64,17 @@ public class Frame{
     host.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        statusBar.setText("Connecting...");
+        type = 1;
+        //statusBar.setText("Connecting...");
+        Server server = new Server();
+        server.doManageHost();
+        statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+        setShips(5, "Aircraft Carrier");
+        opponentPlayerGrid = new BattleShipGrid();
+        opponentPlayerGrid.setOpponentBoardlisteners();
+        game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
+        f.setSize(1200,700);
+        Frame.lock = false;
       }
     });
     Start.add(host);
@@ -102,7 +133,7 @@ public class Frame{
 
     playerGrid = new BattleShipGrid();
 
-    game.add(playerGrid.getGrid(), BorderLayout.CENTER);
+    game.add(playerGrid.getGrid(), BorderLayout.WEST);
     //playerGrid.addToPanel(game, BorderLayout.CENTER);
 
 
@@ -119,12 +150,16 @@ public class Frame{
 //      selectedPosLeft = playerGrid.setShip(size);
   //  }
 
-    
+  }
+
+  public void opponentsPannel(){
+    game = new JPanel(new BorderLayout());
+    opponentPlayerGrid = new BattleShipGrid();
   }
 
   public void createFrame(){
 
-    JFrame f = new JFrame("Demo");
+    f = new JFrame("Demo");
     f.pack();
     f.setSize(700, 700);
     f.add(game);
