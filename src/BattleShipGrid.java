@@ -1,14 +1,10 @@
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
+import java.util.*;
 import java.awt.*;
-import javax.swing.JButton;
-import javax.swing.JFrame;
+import java.awt.event.*;
+import javax.imageio.ImageIO;
+
 
 public class BattleShipGrid{
   private Cell[][] cells;
@@ -16,12 +12,16 @@ public class BattleShipGrid{
   private JPanel battleGrid;
   private int[][] gridRepresentation;
   private JLabel xAxis, yAxis;
-  private int[][] carrier;
-  private int[][] battleship;
-  private int[][] cruiser;
-  private int[][] submarine;
-  private int[][] destroyer;
-
+  private ArrayList<Coordinate> carrier = new ArrayList<>();;
+  private ArrayList<Coordinate> battleship =new ArrayList<>();
+  private ArrayList<Coordinate> patrolboat = new ArrayList<>();
+  private ArrayList<Coordinate> submarine = new ArrayList<>();
+  private ArrayList<Coordinate> destroyer = new ArrayList<>();
+  private ArrayList<Integer> shipcordX= new ArrayList<>();
+  private ArrayList<Integer> shipcordY= new ArrayList<>();
+  public int positionsNeeded = -1;
+  public int currentShip;
+  public String currentShipName;
 
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
@@ -74,7 +74,7 @@ public class BattleShipGrid{
       for(int j=0; j<10;j++){
         Cell tmp = new Cell((char)i ,getLetter(j));
         tmp.setXY(i,j);
-
+        cells[i][j] = tmp;
         tmp.addToGrid(battleGrid);
         gridRepresentation[i][j] = 0;
       }
@@ -85,12 +85,163 @@ public class BattleShipGrid{
     gbc.gridwidth = 2;
     grid.add(battleGrid, gbc);
 
+    //setlisteners();
   }
 
 
-  public void setShips(){
+  public void setlisteners(JLabel statusBar){
+    for(int i=0; i<10; i++ ){
+      for(int j=0; j<10;j++){
+        int ifinal = i;
+        int jfinal = j;
+        Cell tmp = cells[i][j];
+        JButton buttontmp = tmp.getButton();
+        buttontmp.addActionListener(new ActionListener(){
+          @Override
+          public void actionPerformed(ActionEvent actionEvent){
+
+
+            Coordinate tmp = new Coordinate(ifinal, jfinal);
+            if(checkValid(tmp))
+              return;
+              shipcordX.add(ifinal);
+              shipcordY.add(jfinal);
+            positionsNeeded--;
+            statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+          if(positionsNeeded == 0){
+            if(check() == false)
+                statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+
+            else{
+              changeship();
+              statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+              System.out.println("LINE 117");
+            }
+          }
+
+          }
+        });
+      }
+    }
+  }
+
+  public boolean checkValid(Coordinate tmp){
+    if(currentShipName.equals("Aircraft Carrier")){
+      System.out.println("LINE 128");
+      return false;
+    }
+    else if(currentShipName.equals("Battleship"))
+      return carrier.contains(tmp);
+    else if(currentShipName.equals("Destroyer"))
+      return (carrier.contains(tmp) || battleship.contains(tmp));
+    else if(currentShipName.equals("Submarine"))
+      return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp));
+    else
+      return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp));
+  }
+
+  public boolean checkHorizontal(){
+    if(shipcordX.get(0) == shipcordX.get(currentShip-1)){ //Means that the ship might have been places HORIZONTAL
+      if((shipcordY.get(0)+currentShip-1) == shipcordY.get(currentShip-1)){
+        for(int i =1; i<currentShip-1; i++){
+          String path = "./images/batt" + (i+1) + ".gif";
+          System.out.println(path);
+          cells[shipcordX.get(i)][shipcordY.get(i)].changeImage(path);
+        }
+        cells[shipcordX.get(0)][shipcordY.get(0)].changeImage("./images/batt1.gif");
+        cells[shipcordX.get(currentShip-1)][shipcordY.get(currentShip-1)].changeImage("./images/batt5.gif");
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean checkVertical(){
+    if(shipcordY.get(0) == shipcordY.get(currentShip-1)){ //Means that the ship might have been places Vertical
+      if((shipcordX.get(0)+currentShip-1) == shipcordX.get(currentShip-1)){
+        for(int i =1; i<currentShip-1; i++){
+          String path = "./images/batt" + (i+6) + ".gif";
+          System.out.println(path);
+          cells[shipcordX.get(i)][shipcordY.get(i)].changeImage(path);
+        }
+        cells[shipcordX.get(0)][shipcordY.get(0)].changeImage("./images/batt6.gif");
+        cells[shipcordX.get(currentShip-1)][shipcordY.get(currentShip-1)].changeImage("./images/batt10.gif");
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
+  public void changeship(){
+    if(currentShipName.equals("Aircraft Carrier")){
+      for(int i=0; i<currentShip; i++){
+        carrier.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
+      }
+        currentShipName = "Battleship";
+        currentShip = 4;
+        positionsNeeded =4;
+      }
+      else if(currentShipName.equals("Battleship")){
+        for(int i=0; i<currentShip; i++){
+          battleship.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
+        }
+        currentShipName = "Destroyer";
+        currentShip = 3;
+        positionsNeeded = 3;
+      }
+      else if(currentShipName.equals("Destroyer")){
+        for(int i=0; i<currentShip; i++){
+          destroyer.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
+        }
+        currentShipName = "Submarine";
+        currentShip = 3;
+        positionsNeeded =3;
+      }
+      else if(currentShipName.equals("Submarine")){
+        for(int i=0; i<currentShip; i++){
+          submarine.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
+        }
+        currentShipName = "Patrol Boat";
+        currentShip = 2;
+        positionsNeeded =2;
+      }
+      else if(currentShipName.equals("Patrol Boat")){
+        for(int i=0; i<currentShip; i++){
+          patrolboat.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
+        }
+        //changeActionListener;
+      }
+      shipcordX = new ArrayList<Integer>();
+      shipcordY = new ArrayList<Integer>();
 
   }
+
+  public boolean check(){
+    Collections.sort(shipcordX);
+    Collections.sort(shipcordY);
+    if(checkHorizontal())
+      return true;
+    if(checkVertical())
+      return true;
+
+    positionsNeeded = currentShip;
+    shipcordY = new ArrayList<Integer>();
+    shipcordX = new ArrayList<Integer>();
+    return false;
+
+  }
+  public int setShip(int sizeShip, String name){
+    if(positionsNeeded == -1)
+      positionsNeeded = sizeShip;
+    currentShip = sizeShip;
+    currentShipName = name;
+    return positionsNeeded;
+
+  }
+
+
 
   public char getLetter(int val){
     switch (val){
@@ -116,6 +267,10 @@ public class BattleShipGrid{
 
   public JPanel getGrid(){
     return grid;
+  }
+
+  public Cell [][] getCells(){
+    return cells;
   }
 
 }
