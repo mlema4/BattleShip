@@ -12,11 +12,17 @@ public class Client extends Thread{
   public static PrintWriter out;
   public static BufferedReader in;
   public static String temp;
+  public BattleShipGrid playerGrid;
+  public BattleShipGrid opponentPlayerGrid;
+
 
     // set up GUI
-    public Client(){
+    public Client(BattleShipGrid playerGrid, BattleShipGrid opponentPlayerGrid){
       // create buttons
+      this.playerGrid = playerGrid;
+      this.opponentPlayerGrid = opponentPlayerGrid;
       connected = false;
+      Frame.statusBar.setText("connected");
       start();
 
     } // end CountDown constructor
@@ -47,6 +53,7 @@ public class Client extends Thread{
             in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
             //sendButton.setEnabled(true);
             connected = true;
+
             //connectButton.setText("Disconnect from Server");
         } catch (NumberFormatException e) {
             //history.insert ( "Server Port must be an integer\n", 0);
@@ -62,16 +69,45 @@ public class Client extends Thread{
 
         while ( true ) {
           try{
+            // if(!Frame.isShipsSet){
+            //   //Do Nothing
+            //   Frame.updateisShipsSet();
+            // }
+            // else{
+              //Frame.statusBar.setText("GAME STARTING");
+              if((temp = in.readLine())!=null){
 
-            if((temp = in.readLine())!=null){
-              Frame.lock = false;
+              if(temp.equals("hit")){
+                opponentPlayerGrid.updateOppBoard(true);
+                //Frame.lock = false;
+              }
+              else if(temp.equals("miss")){
+                //Frame.opponentPlayerGrid.getCells().[]
+                opponentPlayerGrid.updateOppBoard(false);
+              }
+
+              else if(temp.equals("exit")){
+                break;
+              }
+
+              else{
+                int x = Character.getNumericValue(temp.charAt(0));
+                int y = Character.getNumericValue(temp.charAt(2));
+                //System.out.println(x + " " + y);
+                playerGrid.checkPlayerBoard(x,y);
+                Frame.lock = false;
+
+                Frame.statusBar.setText("YOUR TURN");
+              
+
+
+              }
+
+              System.out.println("from server: " + temp);
+
+            }
             }
 
-            if(temp.equals("exit")){
-              break;
-            }
-            System.out.println("from server: " + temp);
-          }
           catch(Exception e){
 
           }

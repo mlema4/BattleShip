@@ -1,12 +1,13 @@
-import java.net.*; 
-import java.io.*; 
+import java.net.*;
+import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class Server{
-  
 
+  BattleShipGrid playerGrid;
+  BattleShipGrid opponentPlayerGrid;
   private boolean running;
 
   // Network Items
@@ -14,13 +15,15 @@ public class Server{
   ServerSocket serverSocket;
 
    // set up GUI
-   public Server()
+   public Server(BattleShipGrid playerGrid, BattleShipGrid opponentPlayerGrid)
    {
     // create buttons
+    this.playerGrid = playerGrid;
+    this.opponentPlayerGrid = opponentPlayerGrid;
     running = false;
 
    } // end CountDown constructor
-   
+
     // handle button event
     public void doManageHost()
     {
@@ -34,16 +37,3 @@ public class Server{
        }
     }
  } // end class EchoServer3
-
-
-
- 
-
-
-
-
-
-
-
- 
-
