@@ -9,12 +9,12 @@ public class Frame{
   private JFrame f;
   public JPanel game;
   public JPanel opponentPannel;
-  public BattleShipGrid playerGrid;
-  public BattleShipGrid opponentPlayerGrid;
+  public static BattleShipGrid playerGrid;
+  public static BattleShipGrid opponentPlayerGrid;
   private JMenuBar menubar;
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics, host;
-  private JLabel statusBar;
+  public static JLabel statusBar;
   //pricate Cells[][] tmpcells;
   private boolean listenersSet = false;
 
@@ -27,6 +27,10 @@ public class Frame{
   public static String coordinates;
   public static int type;
   private WindowListener threadExiter;
+  public static boolean serverReady = false;
+  public static boolean cf = false;
+  public static int lastXclicked;
+  public static int lastYclicked;
 
 
   public Frame(){
@@ -42,12 +46,13 @@ public class Frame{
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-        Client newConnection = new Client();
+        Client newConnection = new Client(playerGrid, opponentPlayerGrid);
         //if(newConnection.doManageConnection() == 0){
           type = 0;
-          statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+          statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
           setShips(5, "Aircraft Carrier");
           opponentPlayerGrid = new BattleShipGrid();
+          //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
           opponentPlayerGrid.setOpponentBoardlisteners();
           game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
           f.setSize(1200,700);
@@ -67,15 +72,16 @@ public class Frame{
       public void actionPerformed(ActionEvent actionEvent){
         type = 1;
         //statusBar.setText("Connecting...");
-        Server server = new Server();
+        Server server = new Server(playerGrid, opponentPlayerGrid);
         server.doManageHost();
-        statusBar.setText("Connecting..." + "PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+        statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
         setShips(5, "Aircraft Carrier");
         opponentPlayerGrid = new BattleShipGrid();
+        //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
         opponentPlayerGrid.setOpponentBoardlisteners();
         game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
         f.setSize(1200,700);
-        Frame.lock = false;
+        Frame.lock = true;
       }
     });
     Start.add(host);
@@ -91,7 +97,6 @@ public class Frame{
     });
     about = new JMenuItem("About");
     about.addActionListener(new ActionListener(){
-      @Override
       public void actionPerformed(ActionEvent actionEvent){
         JOptionPane.showMessageDialog(null, "Author: Abdulaziz Malik - amalik11\n Manuel Lema - mlema4");
       }
@@ -134,6 +139,8 @@ public class Frame{
 
     playerGrid = new BattleShipGrid();
 
+
+
     game.add(playerGrid.getGrid(), BorderLayout.WEST);
     //playerGrid.addToPanel(game, BorderLayout.CENTER);
 
@@ -161,6 +168,12 @@ public class Frame{
 
   }
 
+  public static void checkPlayerBoard(int x,int y){
+    playerGrid.checkPlayerBoard(x, y);
+  }
+  // public static void updateOppBoard(boolean hit){
+  //   opponentPlayerGrid.ifhit(lastXclicked, lastYclicked, hit);
+  // }
   public void setShips(int size, String ship){
     if(!listenersSet){
       playerGrid.setlisteners(statusBar);

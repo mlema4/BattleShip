@@ -79,7 +79,7 @@ public class Cell{
       Image img = ImageIO.read(getClass().getResource(imagePath));
       Image newimg = img.getScaledInstance(50, 50,  java.awt.Image.SCALE_SMOOTH ) ;
       button.setIcon(new ImageIcon(newimg));
-      imagePath = newImage;
+      this.imagePath = newImage;
     }
     catch (Exception ex) {
       System.out.println(ex);
