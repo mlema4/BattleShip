@@ -43,6 +43,7 @@ public class Frame{
     menubar = new JMenuBar();
     Start = new JMenu("Start");
     connect = new JMenuItem("Connect");
+    opponentPlayerGrid = new BattleShipGrid();
     connect.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
@@ -51,7 +52,7 @@ public class Frame{
           type = 0;
           statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
           setShips(5, "Aircraft Carrier");
-          opponentPlayerGrid = new BattleShipGrid();
+          //opponentPlayerGrid = new BattleShipGrid();
           //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
           opponentPlayerGrid.setOpponentBoardlisteners();
           game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
@@ -76,7 +77,7 @@ public class Frame{
         server.doManageHost();
         statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
         setShips(5, "Aircraft Carrier");
-        opponentPlayerGrid = new BattleShipGrid();
+        //opponentPlayerGrid = new BattleShipGrid();
         //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
         opponentPlayerGrid.setOpponentBoardlisteners();
         game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
