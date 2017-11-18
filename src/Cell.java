@@ -1,3 +1,10 @@
+/*Manuel Lema
+ *Abdulaziz Malik
+ *Cell Class for the buttons that will be in the grid, contains the location and a string for the image path of the button
+ * 
+ * 
+ * 
+ */
 import java.awt.Dimension;
 import java.awt.Image;
 import javax.imageio.ImageIO;

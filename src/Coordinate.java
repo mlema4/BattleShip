@@ -1,3 +1,11 @@
+/*Manuel Lema
+ *Abdulaziz Malik
+ *Coordinate class to help with checking coordinates from buttons
+ *https://stackoverflow.com/questions/5303539/didnt-java-once-have-a-pair-class 
+ * 
+ * 
+ */
+
 public class Coordinate{
 
     private int x,y;

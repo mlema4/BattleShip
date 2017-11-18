@@ -1,3 +1,8 @@
+/*Manuel Lema
+ * Abdulaziz Malik
+ * Frame hold the Player and opponent grids as well as the menu. Most variables are static as the server and client classes need access to some of them
+ * 
+ */
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -50,21 +55,15 @@ public class Frame{
       @Override
       public void actionPerformed(ActionEvent actionEvent){
         Client newConnection = new Client(playerGrid, opponentPlayerGrid);
-        //if(newConnection.doManageConnection() == 0){
+ 
           type = 0;
-          //kilstatusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+
           setShips(5, "Aircraft Carrier");
-          //opponentPlayerGrid = new BattleShipGrid();
-          //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
           opponentPlayerGrid.setOpponentBoardlisteners();
           game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
           f.setSize(1200,700);
           Frame.lock = true;
 
-        //}
-        //else{
-          //JOptionPane.showMessageDialog(null, "couldn't connect to host");
-        //}
 
       }
     });
@@ -74,13 +73,12 @@ public class Frame{
       @Override
       public void actionPerformed(ActionEvent actionEvent){
         type = 1;
-        //statusBar.setText("Connecting...");
+
         Server server = new Server(playerGrid, opponentPlayerGrid);
         server.doManageHost();
         statusBar.setText("Waiting for Connection...");
         setShips(5, "Aircraft Carrier");
-        //opponentPlayerGrid = new BattleShipGrid();
-        //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
+   
         opponentPlayerGrid.setOpponentBoardlisteners();
         game.add(opponentPlayerGrid.getGrid(), BorderLayout.EAST);
         f.setSize(1200,700);
@@ -163,14 +161,14 @@ public class Frame{
 
 
     game.add(playerGrid.getGrid(), BorderLayout.WEST);
-    //playerGrid.addToPanel(game, BorderLayout.CENTER);
+ 
 
 
     game.add(statusBar, BorderLayout.SOUTH);
-  //  tmpcells = playerGrid.getCells();
+ 
 
 
-  //exitlistener
+
   threadExiter = new WindowAdapter() {
 
         @Override
@@ -192,16 +190,13 @@ public class Frame{
   public static void checkPlayerBoard(int x,int y){
     playerGrid.checkPlayerBoard(x, y);
   }
-  // public static void updateOppBoard(boolean hit){
-  //   opponentPlayerGrid.ifhit(lastXclicked, lastYclicked, hit);
-  // }
+ 
   public void setShips(int size, String ship){
     if(!listenersSet){
       playerGrid.setlisteners(statusBar);
     }
       int selectedPosLeft = playerGrid.setShip(size, ship);
-//      selectedPosLeft = playerGrid.setShip(size);
-  //  }
+
 
   }
 

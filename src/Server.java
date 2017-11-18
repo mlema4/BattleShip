@@ -1,3 +1,10 @@
+/*Manuel Lema
+ * Abdulaziz Malik
+ * Server class
+ * 
+ * 
+ */
+
 import java.net.*;
 import java.io.*;
 import java.awt.*;
