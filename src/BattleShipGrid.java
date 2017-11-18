@@ -26,10 +26,12 @@ public class BattleShipGrid{
   public int currentShip;
   public String currentShipName;
   public boolean isShipsSet = false;
-
+  public ArrayList<Coordinate> hits = new ArrayList<>();
+  private ArrayList<Coordinate> guesses = new ArrayList<>();
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
   final static boolean RIGHT_TO_LEFT = false;
+
 
 
 
@@ -54,7 +56,7 @@ public class BattleShipGrid{
       gbc.fill = GridBagConstraints.HORIZONTAL;
     }
 
-  //  gbc.fill = GridBagConstraints.HORIZONTAL;
+    //  gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.weightx = .2;
@@ -67,7 +69,7 @@ public class BattleShipGrid{
     gbc.weightx = .8;
     grid.add(xAxis, gbc);
 
-  //  gbc.fill = GridBagConstraints.HORIZONTAL;
+    //  gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.gridx = 0 ;
     gbc.gridy = 1;
     //gbc.gridwidth = 2;
@@ -107,27 +109,36 @@ public class BattleShipGrid{
           public void actionPerformed(ActionEvent actionEvent){
             //System.out.println("isShipsSet" + isShipsSet);
             if (!isShipsSet){
-            Coordinate tmp = new Coordinate(ifinal, jfinal);
-            if(shipcordX.size() > 0){
-              if(checkValid(tmp) || (shipcordX.get(shipcordX.size() -1 ).equals(ifinal) && shipcordY.get(shipcordY.size() -1).equals(jfinal)))
+              if(currentShipName.equals("None")){
+                Frame.statusBar.setText("Waiting for Opponent...");
                 return;
               }
-            else{
-              if(checkValid(tmp))
+              Coordinate tmp = new Coordinate(ifinal, jfinal);
+              if(shipcordX.size() > 0){
+                if(checkValid(tmp) || (shipcordX.get(shipcordX.size() -1 ).equals(ifinal) && shipcordY.get(shipcordY.size() -1).equals(jfinal)))
                 return;
-            }
+              }
+              else{
+                if(checkValid(tmp))
+                return;
+              }
               shipcordX.add(ifinal);
               shipcordY.add(jfinal);
-            positionsNeeded--;
-            statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-            if(positionsNeeded == 0){
-              if(check() == false)
-                  statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-              else{
-                changeship();
-                statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+              positionsNeeded--;
+              statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+              if(positionsNeeded == 0){
+                if(check() == false)
+                statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+                else{
+                  changeship();
+                  if(currentShipName.equals("None")){
+                    Frame.statusBar.setText("Waiting for Opponent...");
+                    return;
+                  }
+                  else
+                  statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+                }
               }
-            }
             }
           }
         });
@@ -151,7 +162,10 @@ public class BattleShipGrid{
               //System.out.println(ifinal + " " + jfinal);
               Frame.lastXclicked = ifinal;
               Frame.lastYclicked = jfinal;
-
+              Coordinate tmp = new Coordinate(ifinal, jfinal);
+              if(!guesses.contains(tmp)) {
+                guesses.add(tmp);
+              System.out.println(Frame.lastXclicked + " " + Frame.lastYclicked);
               Frame.coordinates = (Integer.toString(ifinal) + " " + Integer.toString(jfinal));
               if(Frame.type == 0){
                 Client.out.println(Frame.coordinates);
@@ -165,8 +179,12 @@ public class BattleShipGrid{
               Frame.statusBar.setText("Opponent's TURN");
 
             }
+            else{
+                Frame.statusBar.setText("Already tried that location. Try again");
+          }
 
           }
+        }
         });
       }
     }
@@ -174,17 +192,17 @@ public class BattleShipGrid{
 
   public boolean checkValid(Coordinate tmp){
     if(currentShipName.equals("Aircraft Carrier")){
-    //  System.out.println("LINE 165");
+      //  System.out.println("LINE 165");
       return false;
     }
     else if(currentShipName.equals("Battleship"))
-      return carrier.contains(tmp);
+    return carrier.contains(tmp);
     else if(currentShipName.equals("Destroyer"))
-      return (carrier.contains(tmp) || battleship.contains(tmp));
+    return (carrier.contains(tmp) || battleship.contains(tmp));
     else if(currentShipName.equals("Submarine"))
-      return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp));
+    return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp));
     else
-      return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp));
+    return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp));
   }
 
   public boolean checkHorizontal(){
@@ -192,7 +210,7 @@ public class BattleShipGrid{
       if((shipcordY.get(0)+currentShip-1) == shipcordY.get(currentShip-1)){
         for(int i =1; i<currentShip-1; i++){
           String path = "./images/batt" + (i+1) + ".gif";
-        //  System.out.println(path);
+          //  System.out.println(path);
           cells[shipcordX.get(i)][shipcordY.get(i)].changeImage(path);
         }
         cells[shipcordX.get(0)][shipcordY.get(0)].changeImage("./images/batt1.gif");
@@ -226,62 +244,70 @@ public class BattleShipGrid{
       for(int i=0; i<currentShip; i++){
         carrier.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
       }
-        currentShipName = "Battleship";
-        currentShip = 4;
-        positionsNeeded =4;
+      currentShipName = "Battleship";
+      currentShip = 4;
+      positionsNeeded =4;
+    }
+    else if(currentShipName.equals("Battleship")){
+      for(int i=0; i<currentShip; i++){
+        battleship.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
       }
-      else if(currentShipName.equals("Battleship")){
-        for(int i=0; i<currentShip; i++){
-          battleship.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
-        }
-        currentShipName = "Destroyer";
-        currentShip = 3;
-        positionsNeeded = 3;
+      currentShipName = "Destroyer";
+      currentShip = 3;
+      positionsNeeded = 3;
+    }
+    else if(currentShipName.equals("Destroyer")){
+      for(int i=0; i<currentShip; i++){
+        destroyer.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
       }
-      else if(currentShipName.equals("Destroyer")){
-        for(int i=0; i<currentShip; i++){
-          destroyer.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
-        }
-        currentShipName = "Submarine";
-        currentShip = 3;
-        positionsNeeded =3;
+      currentShipName = "Submarine";
+      currentShip = 3;
+      positionsNeeded =3;
+    }
+    else if(currentShipName.equals("Submarine")){
+      for(int i=0; i<currentShip; i++){
+        submarine.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
       }
-      else if(currentShipName.equals("Submarine")){
-        for(int i=0; i<currentShip; i++){
-          submarine.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
-        }
-        currentShipName = "PatrolBoat";
-        currentShip = 2;
-        positionsNeeded =2;
+      currentShipName = "PatrolBoat";
+      currentShip = 2;
+      positionsNeeded =2;
+    }
+    else if(currentShipName.equals("PatrolBoat")){
+      Frame.statusBar.setText("Waiting for Opponent");
+      for(int i=0; i<currentShip; i++){
+        patrolboat.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
       }
-      else if(currentShipName.equals("PatrolBoat")){
-        for(int i=0; i<currentShip; i++){
-          patrolboat.add(new Coordinate(shipcordX.get(i), shipcordY.get(i)));
-        }
-        //this.isShipsSet = true;
-        if(Frame.type == 0){
-          System.out.println("ytyui");
-          Client.out.println("cf");
-        }
-        if(Frame.type ==1){
-          System.out.println("LINE 264");
-          Frame.serverReady = true;
-          // if(globalVariables.comSignal.equals("cf"))
-          //   Frame.lock = false;
-        }
+      currentShipName = "None";
+      //this.isShipsSet = true;
+      if(Frame.type == 0){
+        Client.out.println("cf");
       }
-      shipcordX = new ArrayList<Integer>();
-      shipcordY = new ArrayList<Integer>();
+      if(Frame.type ==1){
+        CommunicationThread.out.println("sr");
+        CommunicationThread.out.flush();
+        System.out.println("OK");
+        Frame.serverReady = true;
+
+        // if(globalVariables.comSignal.equals("cf"))
+        //   Frame.lock = false;
+      }
+    }
+    shipcordX = new ArrayList<Integer>();
+    shipcordY = new ArrayList<Integer>();
 
   }
 
+  public void sendReady(){
+    Client.out.println("sr");
+    Client.out.flush();
+  }
   public boolean check(){
     Collections.sort(shipcordX);
     Collections.sort(shipcordY);
     if(checkHorizontal())
-      return true;
+    return true;
     if(checkVertical())
-      return true;
+    return true;
 
     positionsNeeded = currentShip;
     shipcordY = new ArrayList<Integer>();
@@ -291,7 +317,7 @@ public class BattleShipGrid{
   }
   public int setShip(int sizeShip, String name){
     if(positionsNeeded == -1)
-      positionsNeeded = sizeShip;
+    positionsNeeded = sizeShip;
     currentShip = sizeShip;
     currentShipName = name;
     return positionsNeeded;
@@ -301,67 +327,80 @@ public class BattleShipGrid{
   public String getnewImagePath(int x, int y){
     String currentPath = cells[x][y].getImagePath();
     System.out.println("PATH : " + currentPath);
-      if(currentPath.equals("./images/batt1.gif"))
-        return "./images/batt201.gif";
-      for(int i=2; i<5; i++){
-        String path = "./images/batt" + i + ".gif";
-        if(currentPath.equals(path))
-          return "./images/batt202.gif";
-          int val = i+5;
-        path = "./images/batt" + val + ".gif";
-        if(currentPath.equals(path))
-          return "./images/batt205.gif";
-      }
+    if(currentPath.equals("./images/batt1.gif"))
+    return "./images/batt201.gif";
+    for(int i=2; i<5; i++){
+      String path = "./images/batt" + i + ".gif";
+      if(currentPath.equals(path))
+      return "./images/batt202.gif";
+      int val = i+5;
+      path = "./images/batt" + val + ".gif";
+      if(currentPath.equals(path))
+      return "./images/batt205.gif";
+    }
 
-      if(currentPath.equals("./images/batt5.gif"))
-        return "./images/batt203.gif";
-      if(currentPath.equals("./images/batt6.gif"))
-        return "./images/batt204.gif";
-      if(currentPath.equals("./images/batt10.gif"))
-        return "./images/batt206.gif";
-    System.out.println("Abdulaziz is right");
+    if(currentPath.equals("./images/batt5.gif"))
+    return "./images/batt203.gif";
+    if(currentPath.equals("./images/batt6.gif"))
+    return "./images/batt204.gif";
+    if(currentPath.equals("./images/batt10.gif"))
+    return "./images/batt206.gif";
     return null;
   }
 
- public void updateOppBoard(boolean hit){
-   if(hit){
-     cells[Frame.lastXclicked][Frame.lastYclicked].changeImage("./images/batt103.gif");
+  public void updateOppBoard(boolean hit){
+    if(hit){
+      System.out.println(Frame.lastXclicked + Frame.lastYclicked);
+      cells[Frame.lastXclicked][Frame.lastYclicked].changeImage("./images/batt103.gif");
 
-   }
-   else{
-    cells[Frame.lastXclicked][Frame.lastYclicked].changeImage("./images/batt102.gif");
-   }
- }
-  public void checkPlayerBoard(int x, int y){
+    }
+    else{
+      System.out.println(Frame.lastXclicked + " " + Frame.lastYclicked);
+      cells[Frame.lastXclicked][Frame.lastYclicked].changeImage("./images/batt102.gif");
+    }
+  }
+
+
+  public int checkPlayerBoard(int x, int y){
 
     Coordinate tmp = new Coordinate(x,y);
 
     if(carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp)|| patrolboat.contains(tmp)){
-      System.out.println("CArrier : " + carrier.contains(tmp));
-      System.out.println("cells: ");
       cells[x][y].changeImage(getnewImagePath(x,y));
-      //send hit and keep frame locked
-      if(Frame.type == 1){
-      CommunicationThread.out.println("hit");
-      CommunicationThread.out.flush();
-      }
-      else{
-        Client.out.println("hit");
-        Client.out.flush();
 
-      }
+        if(Frame.type == 1){
+          CommunicationThread.out.println("hit");
+          CommunicationThread.out.flush();
+
+          //System.out.println("hits: " + hits);
+          hits.add(tmp);
+          if(hits.size() == 17){
+            JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
+          }
+        }
+        else{
+          Client.out.println("hit");
+          Client.out.flush();
+
+          hits.add(tmp);
+          if(hits.size() == 17){
+            JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
+          }
+        }
+
     }
     else{
       //Send Message saying miss and change frame to unlock
       if(Frame.type ==1){
-      CommunicationThread.out.println("miss");
-      CommunicationThread.out.flush();
+        CommunicationThread.out.println("miss");
+        CommunicationThread.out.flush();
       }
       else{
         Client.out.println("miss");
         Client.out.flush();
       }
     }
+    return 1;
   }
 
   public char getLetter(int val){
@@ -377,13 +416,13 @@ public class BattleShipGrid{
       case 9: return 'I';
       case 10: return 'J';
       default:
-        break;
+      break;
     }
     return '0';
   }
 
   public void addToPanel(JPanel panel, GridBagConstraints gbc){
-      panel.add(grid, gbc);
+    panel.add(grid, gbc);
   }
 
   public JPanel getGrid(){

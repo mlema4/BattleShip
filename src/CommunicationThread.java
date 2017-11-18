@@ -41,6 +41,14 @@ class CommunicationThread extends Thread
 
       while (true)
       {
+        // if(!start){
+        //   if(Frame.serverReady && Frame.cf){
+        //     System.out.println("server is ready");
+        //     Frame.lock = false;
+        //     Frame.statusBar.setText("YOUR TURN");
+        //     start=true;
+        //   }
+        // }
 
         if((inputLine = in.readLine()) != null){
           System.out.println("before start"+ start +" " + inputLine);
@@ -50,26 +58,25 @@ class CommunicationThread extends Thread
               System.out.println("cf print: " + inputLine);
               Frame.cf = true;
             }
-          }
-          if(!start){
-            if(Frame.serverReady && Frame.cf){
-              System.out.println("server is ready");
+            if(inputLine.equals("sr")){
+              Frame.serverReady = true;
               Frame.lock = false;
               Frame.statusBar.setText("YOUR TURN");
               start=true;
             }
           }
 
-
           else{
             System.out.println ("from Cilent: " + inputLine);
+
             if(inputLine.equals("hit")){
-              //server.opponentPlayerGrid.updateOppBoard(true);
+              server.opponentPlayerGrid.updateOppBoard(true);
+
               //Frame.lock = false;
             }
 
             else if(inputLine.equals("miss")){
-              //server.opponentPlayerGrid.updateOppBoard(false);
+              server.opponentPlayerGrid.updateOppBoard(false);
             }
 
             else if (inputLine.equals("exit")){
@@ -81,9 +88,13 @@ class CommunicationThread extends Thread
               int x = Character.getNumericValue(inputLine.charAt(0));
               int y = Character.getNumericValue(inputLine.charAt(2));
               System.out.println(x + " " + y);
-              server.playerGrid.checkPlayerBoard(x,y);
+              if(server.playerGrid.checkPlayerBoard(x,y) == 0){
+                Frame.lock = true;
+              }
+              else{
               Frame.lock = false;
               Frame.statusBar.setText("YOUR TURN");
+            }
 
             }
 

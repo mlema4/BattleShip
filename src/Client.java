@@ -76,7 +76,9 @@ public class Client extends Thread{
             // else{
               //Frame.statusBar.setText("GAME STARTING");
               if((temp = in.readLine())!=null){
-
+              if(temp.equals("sr")){
+                opponentPlayerGrid.sendReady();
+              }
               if(temp.equals("hit")){
                 opponentPlayerGrid.updateOppBoard(true);
                 //Frame.lock = false;
@@ -94,11 +96,14 @@ public class Client extends Thread{
                 int x = Character.getNumericValue(temp.charAt(0));
                 int y = Character.getNumericValue(temp.charAt(2));
                 //System.out.println(x + " " + y);
-                playerGrid.checkPlayerBoard(x,y);
+                if(playerGrid.checkPlayerBoard(x,y)==0){
+                  Frame.lock = true;
+                }
+                else{
                 Frame.lock = false;
 
                 Frame.statusBar.setText("YOUR TURN");
-              
+                }
 
 
               }
