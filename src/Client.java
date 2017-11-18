@@ -67,8 +67,9 @@ public class Client extends Thread{
             //return 1;
         }
 
-        while ( true ) {
+        
           try{
+            while ( true ) {
             // if(!Frame.isShipsSet){
             //   //Do Nothing
             //   Frame.updateisShipsSet();
@@ -89,6 +90,7 @@ public class Client extends Thread{
               }
 
               else if(temp.equals("exit")){
+                connected = false;
                 break;
               }
 
@@ -112,32 +114,31 @@ public class Client extends Thread{
 
             }
             }
+          }
 
           catch(Exception e){
 
           }
-        }
+          try
+          {
+            out.close();
+            in.close();
+            echoSocket.close();
+            //sendButton.setEnabled(false);
+            //connected = false;
+            //connectButton.setText("Connect to Server");
+          }
+          catch (IOException e)
+          {
+              JOptionPane.showMessageDialog(null, "couldn't close socket");
+              //history.insert ("Error in closing down Socket ", 0);
+              //return 1;
+          }
+        
 
 
       }
-      else
-      {
-        try
-        {
-          out.close();
-          in.close();
-          echoSocket.close();
-          //sendButton.setEnabled(false);
-          //connected = false;
-          //connectButton.setText("Connect to Server");
-        }
-        catch (IOException e)
-        {
-            JOptionPane.showMessageDialog(null, "couldn't close socket");
-            //history.insert ("Error in closing down Socket ", 0);
-            //return 1;
-        }
-      }
+      
       //return 0;
     }
  } // end class EchoServer3

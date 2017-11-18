@@ -375,8 +375,14 @@ public class BattleShipGrid{
           //System.out.println("hits: " + hits);
           hits.add(tmp);
           if(hits.size() == 17){
-            JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
+            int confirm = JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER\n"+"Play Again?", JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE);
+            if (confirm == 1) {
+              CommunicationThread.out.println("exit");
+              Client.out.println("exit");
+            }
           }
+
         }
         else{
           Client.out.println("hit");
