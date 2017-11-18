@@ -62,7 +62,7 @@ public class Client extends Thread{
             //history.insert("Don't know about host: " + machineName , 0);
             //return 1;
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "IOException");
+            JOptionPane.showMessageDialog(null, "Couldn't connect to host");
             //history.insert ("Couldn't get I/O for " + "the connection to: " + machineName , 0);
             //return 1;
         }
