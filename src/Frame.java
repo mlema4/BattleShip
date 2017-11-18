@@ -15,6 +15,7 @@ public class Frame{
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics, host;
   public static JLabel statusBar;
+  public static int hits = 0;
   //pricate Cells[][] tmpcells;
   private boolean listenersSet = false;
 
@@ -31,6 +32,7 @@ public class Frame{
   public static boolean cf = false;
   public static int lastXclicked;
   public static int lastYclicked;
+  public static boolean connected = false;
 
 
   public Frame(){
@@ -50,7 +52,7 @@ public class Frame{
         Client newConnection = new Client(playerGrid, opponentPlayerGrid);
         //if(newConnection.doManageConnection() == 0){
           type = 0;
-          statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+          //kilstatusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
           setShips(5, "Aircraft Carrier");
           //opponentPlayerGrid = new BattleShipGrid();
           //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
@@ -75,7 +77,7 @@ public class Frame{
         //statusBar.setText("Connecting...");
         Server server = new Server(playerGrid, opponentPlayerGrid);
         server.doManageHost();
-        statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+        statusBar.setText("Waiting for Connection...");
         setShips(5, "Aircraft Carrier");
         //opponentPlayerGrid = new BattleShipGrid();
         //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
@@ -90,6 +92,7 @@ public class Frame{
 
     Help = new JMenu("Help");
     help = new JMenuItem("Help");
+
     help.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){

@@ -22,7 +22,8 @@ public class Client extends Thread{
       this.playerGrid = playerGrid;
       this.opponentPlayerGrid = opponentPlayerGrid;
       connected = false;
-      Frame.statusBar.setText("connected");
+      Frame.connected =true;
+      Frame.statusBar.setText("CONNECTED...PLEASE CLICK ON A CELL TO START PLACING SHIPS");
       start();
 
     } // end CountDown constructor
@@ -80,7 +81,9 @@ public class Client extends Thread{
                 opponentPlayerGrid.sendReady();
               }
               if(temp.equals("hit")){
-                opponentPlayerGrid.updateOppBoard(true);
+            	  Frame.hits++;
+            	  opponentPlayerGrid.updateOppBoard(true);
+                
                 //Frame.lock = false;
               }
               else if(temp.equals("miss")){

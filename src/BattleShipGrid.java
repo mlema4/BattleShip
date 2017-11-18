@@ -27,7 +27,7 @@ public class BattleShipGrid{
   public String currentShipName;
   public boolean isShipsSet = false;
   public ArrayList<Coordinate> hits = new ArrayList<>();
-  private ArrayList<Coordinate> guesses = new ArrayList<>();
+  public ArrayList<Coordinate> guesses = new ArrayList<>();
   final static boolean shouldFill = true;
   final static boolean shouldWeightX = true;
   final static boolean RIGHT_TO_LEFT = false;
@@ -108,35 +108,41 @@ public class BattleShipGrid{
           @Override
           public void actionPerformed(ActionEvent actionEvent){
             //System.out.println("isShipsSet" + isShipsSet);
-            if (!isShipsSet){
-              if(currentShipName.equals("None")){
-                Frame.statusBar.setText("Waiting for Opponent...");
-                return;
-              }
-              Coordinate tmp = new Coordinate(ifinal, jfinal);
-              if(shipcordX.size() > 0){
-                if(checkValid(tmp) || (shipcordX.get(shipcordX.size() -1 ).equals(ifinal) && shipcordY.get(shipcordY.size() -1).equals(jfinal)))
-                return;
-              }
-              else{
-                if(checkValid(tmp))
-                return;
-              }
-              shipcordX.add(ifinal);
-              shipcordY.add(jfinal);
-              positionsNeeded--;
-              statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
-              if(positionsNeeded == 0){
-                if(check() == false)
-                statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+            if(!Frame.connected){
+              System.out.println("WAiting for connection");
+              Frame.statusBar.setText("Waiting for connection");
+            }
+            else{
+              if (!isShipsSet){
+                if(currentShipName.equals("None")){
+                  Frame.statusBar.setText("Waiting for Opponent...");
+                  return;
+                }
+                Coordinate tmp = new Coordinate(ifinal, jfinal);
+                if(shipcordX.size() > 0){
+                  if(checkValid(tmp) || (shipcordX.get(shipcordX.size() -1 ).equals(ifinal) && shipcordY.get(shipcordY.size() -1).equals(jfinal)))
+                  return;
+                }
                 else{
-                  changeship();
-                  if(currentShipName.equals("None")){
-                    Frame.statusBar.setText("Waiting for Opponent...");
-                    return;
+                  if(checkValid(tmp))
+                  return;
+                }
+                shipcordX.add(ifinal);
+                shipcordY.add(jfinal);
+                positionsNeeded--;
+                statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+                if(positionsNeeded == 0){
+                  if(check() == false)
+                  statusBar.setText("PLEASE TRY AGAIN. PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
+                  else{
+                    changeship();
+                    if(currentShipName.equals("None")){
+                      Frame.statusBar.setText("Waiting for Opponent...");
+                      return;
+                    }
+                    else
+                    statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
                   }
-                  else
-                  statusBar.setText("PLEASE CLICK " + positionsNeeded + " MORE CELLS TO PLACE " + currentShipName);
                 }
               }
             }
@@ -165,26 +171,26 @@ public class BattleShipGrid{
               Coordinate tmp = new Coordinate(ifinal, jfinal);
               if(!guesses.contains(tmp)) {
                 guesses.add(tmp);
-              System.out.println(Frame.lastXclicked + " " + Frame.lastYclicked);
-              Frame.coordinates = (Integer.toString(ifinal) + " " + Integer.toString(jfinal));
-              if(Frame.type == 0){
-                Client.out.println(Frame.coordinates);
-                Client.out.flush();
+                System.out.println(Frame.lastXclicked + " " + Frame.lastYclicked);
+                Frame.coordinates = (Integer.toString(ifinal) + " " + Integer.toString(jfinal));
+                if(Frame.type == 0){
+                  Client.out.println(Frame.coordinates);
+                  Client.out.flush();
+                }
+                else{
+                  CommunicationThread.out.println(Frame.coordinates);
+                  CommunicationThread.out.flush();
+                }
+                Frame.lock = true;
+                Frame.statusBar.setText("Opponent's TURN");
+
               }
               else{
-                CommunicationThread.out.println(Frame.coordinates);
-                CommunicationThread.out.flush();
+                Frame.statusBar.setText("Already tried that location. Try again");
               }
-              Frame.lock = true;
-              Frame.statusBar.setText("Opponent's TURN");
 
             }
-            else{
-                Frame.statusBar.setText("Already tried that location. Try again");
           }
-
-          }
-        }
         });
       }
     }
@@ -350,6 +356,9 @@ public class BattleShipGrid{
 
   public void updateOppBoard(boolean hit){
     if(hit){
+      if(Frame.hits == 17){
+        JOptionPane.showMessageDialog(null, "YOU WIN", "GAME OVER",JOptionPane.DEFAULT_OPTION);
+      }
       System.out.println(Frame.lastXclicked + Frame.lastYclicked);
       cells[Frame.lastXclicked][Frame.lastYclicked].changeImage("./images/batt103.gif");
 
@@ -368,25 +377,25 @@ public class BattleShipGrid{
     if(carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp)|| patrolboat.contains(tmp)){
       cells[x][y].changeImage(getnewImagePath(x,y));
 
-        if(Frame.type == 1){
-          CommunicationThread.out.println("hit");
-          CommunicationThread.out.flush();
+      if(Frame.type == 1){
+        CommunicationThread.out.println("hit");
+        CommunicationThread.out.flush();
 
-          //System.out.println("hits: " + hits);
-          hits.add(tmp);
-          if(hits.size() == 17){
-            JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
-          }
+        //System.out.println("hits: " + hits);
+        hits.add(tmp);
+        if(hits.size() == 17){
+          JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
         }
-        else{
-          Client.out.println("hit");
-          Client.out.flush();
+      }
+      else{
+        Client.out.println("hit");
+        Client.out.flush();
 
-          hits.add(tmp);
-          if(hits.size() == 17){
-            JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
-          }
+        hits.add(tmp);
+        if(hits.size() == 17){
+          JOptionPane.showMessageDialog(null, "YOU LOSE :(", "GAME OVER", JOptionPane.DEFAULT_OPTION);
         }
+      }
 
     }
     else{
