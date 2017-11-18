@@ -1,3 +1,11 @@
+/*Manuel Lema
+ * Abdulaziz Malik
+ * Communication Thread for the server
+ * 
+ * 
+ */
+
+
 import java.net.*;
 import java.io.*;
 import java.awt.*;
@@ -23,7 +31,7 @@ class CommunicationThread extends Thread
   {
     clientSocket = clientSoc;
     server = s;
-    //gui.history.insert ("Comminucating with Port" + clientSocket.getLocalPort()+"\n", 0);
+    
     Frame.connected = true;
     start();
   }
@@ -42,14 +50,7 @@ class CommunicationThread extends Thread
 
       while (true)
       {
-        // if(!start){
-        //   if(Frame.serverReady && Frame.cf){
-        //     System.out.println("server is ready");
-        //     Frame.lock = false;
-        //     Frame.statusBar.setText("YOUR TURN");
-        //     start=true;
-        //   }
-        // }
+
 
         if((inputLine = in.readLine()) != null){
           System.out.println("before start"+ start +" " + inputLine);

@@ -1,8 +1,13 @@
+/*
+Manue Lema
+Abdulaziz Malik
+
+BattleShipGrid contains the buttons of a grid whether it be the player or the opponenent grid
+
+*/
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
-//import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
-
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -56,7 +61,7 @@ public class BattleShipGrid{
       gbc.fill = GridBagConstraints.HORIZONTAL;
     }
 
-    //  gbc.fill = GridBagConstraints.HORIZONTAL;
+
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.weightx = .2;
@@ -69,7 +74,7 @@ public class BattleShipGrid{
     gbc.weightx = .8;
     grid.add(xAxis, gbc);
 
-    //  gbc.fill = GridBagConstraints.HORIZONTAL;
+
     gbc.gridx = 0 ;
     gbc.gridy = 1;
     //gbc.gridwidth = 2;
@@ -97,6 +102,7 @@ public class BattleShipGrid{
   }
 
 
+  //Set action listeners to the buttons of the playerGrid
   public void setlisteners(JLabel statusBar){
     for(int i=0; i<10; i++ ){
       for(int j=0; j<10;j++){
@@ -109,7 +115,6 @@ public class BattleShipGrid{
           public void actionPerformed(ActionEvent actionEvent){
             //System.out.println("isShipsSet" + isShipsSet);
             if(!Frame.connected){
-              System.out.println("WAiting for connection");
               Frame.statusBar.setText("Waiting for connection");
             }
             else{
@@ -148,10 +153,13 @@ public class BattleShipGrid{
             }
           }
         });
+
       }
     }
   }
 
+
+  //Set the ActionListeners for the buttons in the opponentPlayerGrid
   public void setOpponentBoardlisteners(){
     for(int i=0; i<10; i++ ){
       for(int j=0; j<10;j++){
@@ -196,6 +204,7 @@ public class BattleShipGrid{
     }
   }
 
+  //Checks if the button click is a valid location for the ship
   public boolean checkValid(Coordinate tmp){
     if(currentShipName.equals("Aircraft Carrier")){
       //  System.out.println("LINE 165");
@@ -211,6 +220,7 @@ public class BattleShipGrid{
     return (carrier.contains(tmp) || battleship.contains(tmp) || destroyer.contains(tmp) || submarine.contains(tmp));
   }
 
+  //Checks if the ship is HORIZONTAL
   public boolean checkHorizontal(){
     if(shipcordX.get(0) == shipcordX.get(currentShip-1)){ //Means that the ship might have been places HORIZONTAL
       if((shipcordY.get(0)+currentShip-1) == shipcordY.get(currentShip-1)){
@@ -227,6 +237,7 @@ public class BattleShipGrid{
     return false;
   }
 
+  //check if the ship is vertical
   public boolean checkVertical(){
     if(shipcordY.get(0) == shipcordY.get(currentShip-1)){ //Means that the ship might have been places Vertical
       if((shipcordX.get(0)+currentShip-1) == shipcordX.get(currentShip-1)){
@@ -244,7 +255,7 @@ public class BattleShipGrid{
   }
 
 
-
+  //Method to change what ship is being placed on the grid, Changes to none after last ship
   public void changeship(){
     if(currentShipName.equals("Aircraft Carrier")){
       for(int i=0; i<currentShip; i++){
@@ -293,20 +304,20 @@ public class BattleShipGrid{
         CommunicationThread.out.flush();
         System.out.println("OK");
         Frame.serverReady = true;
-
-        // if(globalVariables.comSignal.equals("cf"))
-        //   Frame.lock = false;
       }
     }
     shipcordX = new ArrayList<Integer>();
     shipcordY = new ArrayList<Integer>();
-
   }
 
+
+  //Mehthod to tell the Server it is ready
   public void sendReady(){
     Client.out.println("sr");
     Client.out.flush();
   }
+
+  //Checks if the current clicked location is already set
   public boolean check(){
     Collections.sort(shipcordX);
     Collections.sort(shipcordY);
@@ -321,6 +332,8 @@ public class BattleShipGrid{
     return false;
 
   }
+
+  //Sets the ships in the grid
   public int setShip(int sizeShip, String name){
     if(positionsNeeded == -1)
     positionsNeeded = sizeShip;
@@ -330,6 +343,7 @@ public class BattleShipGrid{
 
   }
 
+  //Gets the image path for a button based on it being hit
   public String getnewImagePath(int x, int y){
     String currentPath = cells[x][y].getImagePath();
     System.out.println("PATH : " + currentPath);
@@ -354,6 +368,7 @@ public class BattleShipGrid{
     return null;
   }
 
+  //updates the opponentPlayerGrid to change the clicked button to either a hit or miss
   public void updateOppBoard(boolean hit){
     if(hit){
       if(Frame.hits == 17){
@@ -370,6 +385,7 @@ public class BattleShipGrid{
   }
 
 
+  //We check whether the opponent has clicked on a location where there was a ship in the playerGrid
   public int checkPlayerBoard(int x, int y){
 
     Coordinate tmp = new Coordinate(x,y);
@@ -411,6 +427,7 @@ public class BattleShipGrid{
     }
     return 1;
   }
+
 
   public char getLetter(int val){
     switch (val){

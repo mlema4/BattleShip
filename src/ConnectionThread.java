@@ -1,3 +1,9 @@
+/*Manuel Lema
+ * Abdulaziz Malik
+ * ConnectionThread that helps establish a connection
+ * 
+ * 
+ */
 import java.net.*; 
 import java.io.*; 
 import java.awt.*;
@@ -22,13 +28,12 @@ class ConnectionThread extends Thread
     try 
     { 
         server.serverSocket = new ServerSocket(10008); 
-      //gui.portInfo.setText("Listening on Port: " + gui.serverSocket.getLocalPort());
       System.out.println ("Connection Socket Created");
       try { 
         while (server.serverContinue)
         {
           System.out.println ("Waiting for Connection");
-          //gui.ssButton.setText("Stop Listening");
+ 
           new CommunicationThread (server.serverSocket.accept(), server); 
         }
       } 
