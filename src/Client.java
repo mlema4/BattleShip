@@ -22,7 +22,8 @@ public class Client extends Thread{
       this.playerGrid = playerGrid;
       this.opponentPlayerGrid = opponentPlayerGrid;
       connected = false;
-      Frame.statusBar.setText("connected");
+      Frame.connected =true;
+      Frame.statusBar.setText("CONNECTED...PLEASE CLICK ON A CELL TO START PLACING SHIPS");
       start();
 
     } // end CountDown constructor
@@ -62,7 +63,7 @@ public class Client extends Thread{
             //history.insert("Don't know about host: " + machineName , 0);
             //return 1;
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "IOException");
+            JOptionPane.showMessageDialog(null, "Couldn't connect to host");
             //history.insert ("Couldn't get I/O for " + "the connection to: " + machineName , 0);
             //return 1;
         }
@@ -80,7 +81,9 @@ public class Client extends Thread{
                 opponentPlayerGrid.sendReady();
               }
               if(temp.equals("hit")){
-                opponentPlayerGrid.updateOppBoard(true);
+            	  Frame.hits++;
+            	  opponentPlayerGrid.updateOppBoard(true);
+                
                 //Frame.lock = false;
               }
               else if(temp.equals("miss")){

@@ -24,16 +24,17 @@ class CommunicationThread extends Thread
     clientSocket = clientSoc;
     server = s;
     //gui.history.insert ("Comminucating with Port" + clientSocket.getLocalPort()+"\n", 0);
+    Frame.connected = true;
     start();
   }
 
   public void run()
   {
     System.out.println ("New Communication Thread Started");
+    Frame.statusBar.setText("CONNECTED...PLEASE CLICK ON A CELL TO START PLACING SHIPS");
 
     try {
-      out = new PrintWriter(clientSocket.getOutputStream(),
-      true);
+      out = new PrintWriter(clientSocket.getOutputStream(),true);
       BufferedReader in = new BufferedReader(
       new InputStreamReader( clientSocket.getInputStream()));
 
@@ -60,6 +61,9 @@ class CommunicationThread extends Thread
             }
             if(inputLine.equals("sr")){
               Frame.serverReady = true;
+
+            }
+            if(Frame.serverReady && Frame.cf){
               Frame.lock = false;
               Frame.statusBar.setText("YOUR TURN");
               start=true;
@@ -70,9 +74,8 @@ class CommunicationThread extends Thread
             System.out.println ("from Cilent: " + inputLine);
 
             if(inputLine.equals("hit")){
+              Frame.hits++;
               server.opponentPlayerGrid.updateOppBoard(true);
-
-              //Frame.lock = false;
             }
 
             else if(inputLine.equals("miss")){

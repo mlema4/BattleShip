@@ -15,6 +15,7 @@ public class Frame{
   private JMenu Start, Help, Exit;
   private JMenuItem connect, about, help, statistics, host;
   public static JLabel statusBar;
+  public static int hits = 0;
   //pricate Cells[][] tmpcells;
   private boolean listenersSet = false;
 
@@ -31,6 +32,7 @@ public class Frame{
   public static boolean cf = false;
   public static int lastXclicked;
   public static int lastYclicked;
+  public static boolean connected = false;
 
 
   public Frame(){
@@ -50,7 +52,7 @@ public class Frame{
         Client newConnection = new Client(playerGrid, opponentPlayerGrid);
         //if(newConnection.doManageConnection() == 0){
           type = 0;
-          statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+          //kilstatusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
           setShips(5, "Aircraft Carrier");
           //opponentPlayerGrid = new BattleShipGrid();
           //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
@@ -75,7 +77,7 @@ public class Frame{
         //statusBar.setText("Connecting...");
         Server server = new Server(playerGrid, opponentPlayerGrid);
         server.doManageHost();
-        statusBar.setText("PLEASE CLICK 5 CELLS TO PLACE AIRCRAFT CARRIER");
+        statusBar.setText("Waiting for Connection...");
         setShips(5, "Aircraft Carrier");
         //opponentPlayerGrid = new BattleShipGrid();
         //opponentPlayerGrid.isShipsSet = playerGrid.isShipsSet;
@@ -90,10 +92,28 @@ public class Frame{
 
     Help = new JMenu("Help");
     help = new JMenuItem("Help");
+
     help.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent actionEvent){
-
+        JOptionPane.showMessageDialog(null, "connection help:\n   "+
+        "To be able to play. One user has to host the game and another has to connect.\n   "+
+        "If a host if not found a message will aper that will display a message. You can\n   " +
+        "try again or host the game and wait for a player. If no message aper then that\n   " +
+        "means a connection was made.\n\n   " +
+        "To connect, go to the start menu item and click on connect.\n   " +
+        "To Host, go to start menu item and click host then wait for someone.\n\ngame help:\n   " +
+       "Once a host and a client are matched. Then both players set their board.\n   " +
+       "You can't place ships on your opponent's board. Each player gets 5 different\n   " +
+       "ships. The ship vary in size. A Aircraft Carriers is size 5. This means that\n   " +
+       "it takes 5 cells on your board, Battleship is size 4, Destroyer is size 3,\n   " +
+       "Submarine is size 3, and Patrol Boat is size 2. You can't place your ships in\n   " +
+       "diagonals, either vertical or horizontal. Once both players set the board if a\n   " +
+       "player is host they get to go first. The goal of the game is sink all of your\n   " +
+       "opponent's ships. Plays go on a turn by turn bases. Each click on your opponent's board\n   " +
+       "will try to destroy a part of one of their ship. Your board and the opponent board will update\n   " +
+       "based on what parts of your ship are destroy and where you hit and missed.\n   " +
+       "Whoever destroys all of their opponent ship first wins.");
       }
     });
     about = new JMenuItem("About");
